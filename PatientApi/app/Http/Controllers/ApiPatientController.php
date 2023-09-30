@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendConfirmationEmail;
+use App\Mail\ConfirmationEmail;
 use App\Models\Patient;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class ApiPatientController extends Controller
@@ -51,13 +54,15 @@ class ApiPatientController extends Controller
             $patient->name=$name;
             $patient->email=$email;
             $patient->phoneNumber=$phoneNumber;
-
+            
             if ($request->hasFile('documentPhoto')) {
                 $path = $request->documentPhoto->store('images');
                 $patient->documentPhoto=$path;
             }
-
+            
             $patient->save();
+            
+            dispatch(new SendConfirmationEmail($email));
 
             return response()->json([
                 'status' => true,
@@ -78,7 +83,7 @@ class ApiPatientController extends Controller
         
             return response()->json([
                 'status' => false,
-                'message' => 'DataBase error',
+                'message' => 'Internal error',
                 'error' => $error,
             ], 500);
         }
