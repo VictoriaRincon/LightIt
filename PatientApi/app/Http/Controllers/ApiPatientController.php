@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePatientRequest;
 use App\Models\Patient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class ApiPatientController extends Controller
@@ -36,22 +37,27 @@ class ApiPatientController extends Controller
     {
         try {
 
-            $jsonData = $request->json()->all();
-            $name = $jsonData['name'];
-            $email = $jsonData['email'];
-            $phoneNumber = $jsonData['phoneNumber'];
+            $name = $request->name;
+            $email = $request->email;
+            $phoneNumber = $request->phoneNumber;
 
             $request->validate([
                 'name' => 'required|string',
                 'email' => 'required|email',
-                'phoneNumber' => 'required|string|min:9'
+                'phoneNumber' => 'required|string|min:9',
+                'documentPhoto' => 'nullable|image|mimes:jpeg,png,jpg,gif'
             ]);
     
-
             $patient = new Patient;
             $patient->name=$name;
             $patient->email=$email;
             $patient->phoneNumber=$phoneNumber;
+
+            if ($request->hasFile('documentPhoto')) {
+                $path = $request->documentPhoto->store('images');
+                $patient->documentPhoto=$path;
+            }
+
             $patient->save();
 
             return response()->json([
