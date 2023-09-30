@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorePatientRequest;
 use App\Models\Patient;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class ApiPatientController extends Controller
@@ -74,6 +73,14 @@ class ApiPatientController extends Controller
                 'message' => 'Validation failed',
                 'errors' => $errors,
             ], 422);
+        } catch (Exception  $e) {
+            $error = $e->getMessage();
+        
+            return response()->json([
+                'status' => false,
+                'message' => 'DataBase error',
+                'error' => $error,
+            ], 500);
         }
 
     }
