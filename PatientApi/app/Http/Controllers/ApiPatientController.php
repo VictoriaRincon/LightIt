@@ -17,11 +17,9 @@ class ApiPatientController extends Controller
      */
     public function index()
     {
-        $patient = Patient::all();
-        return response()->json([
-            'status' => true,
-            'patients' => $patient
-        ]);
+        $patients = Patient::all();
+
+        return view('index', compact('patients'));
     }
 
     /**
@@ -56,8 +54,8 @@ class ApiPatientController extends Controller
             $patient->phoneNumber=$phoneNumber;
             
             if ($request->hasFile('documentPhoto')) {
-                $path = $request->documentPhoto->store('images');
-                $patient->documentPhoto=$path;
+                $path = $request->documentPhoto->store('public/images');
+                $patient->documentPhoto=basename($path);
             }
             
             $patient->save();
@@ -122,5 +120,14 @@ class ApiPatientController extends Controller
     public function destroy(Patient $patient)
     {
         //
+    }
+
+    public function list(){
+        $patients = Patient::all();
+
+        return response()->json([
+            'status' => true,
+            'patients' => $patients
+        ]);
     }
 }
