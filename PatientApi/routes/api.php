@@ -19,5 +19,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/patients', [\App\Http\Controllers\ApiPatientController::class, 'list']);
-Route::get('/index', [\App\Http\Controllers\ApiPatientController::class, 'index']);
-Route::post('/patients', [\App\Http\Controllers\ApiPatientController::class, 'store']);
+Route::post('/patients', [\App\Http\Controllers\ApiPatientController::class, 'save']);

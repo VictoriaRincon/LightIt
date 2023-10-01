@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\SendConfirmationEmail;
-use App\Mail\ConfirmationEmail;
 use App\Models\Patient;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class ApiPatientController extends Controller
@@ -19,7 +17,7 @@ class ApiPatientController extends Controller
     {
         $patients = Patient::all();
 
-        return view('index', compact('patients'));
+        return view('patients', compact('patients'));
     }
 
     /**
@@ -35,57 +33,32 @@ class ApiPatientController extends Controller
      */
     public function store(Request $request)
     {
-        try {
+        $name = $request->name;
+        $email = $request->email;
+        $phoneNumber = $request->phoneNumber;
 
-            $name = $request->name;
-            $email = $request->email;
-            $phoneNumber = $request->phoneNumber;
+        $request->validate([
+            'name' => 'required|regex:/^[A-Za-z\s]+$/',
+            'email' => 'required|email|unique:patients|ends_with:@gmail.com',
+            'phoneNumber' => 'required|regex:/^[0-9]+$/',
+            'documentPhoto' => 'nullable|image|mimes:jpg'
+        ]);
 
-            $request->validate([
-                'name' => 'required|string',
-                'email' => 'required|email',
-                'phoneNumber' => 'required|string|min:9',
-                'documentPhoto' => 'nullable|image|mimes:jpeg,png,jpg,gif'
-            ]);
-    
-            $patient = new Patient;
-            $patient->name=$name;
-            $patient->email=$email;
-            $patient->phoneNumber=$phoneNumber;
-            
-            if ($request->hasFile('documentPhoto')) {
-                $path = $request->documentPhoto->store('public/images');
-                $patient->documentPhoto=basename($path);
-            }
-            
-            $patient->save();
-            
-            dispatch(new SendConfirmationEmail($email));
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Patient Created successfully!',
-                'patient' => $patient,
-            ], 201);
-
-        } catch (ValidationException $e) {
-            $errors = $e->validator->errors();
+        $patient = new Patient;
+        $patient->name=$name;
+        $patient->email=$email;
+        $patient->phoneNumber=$phoneNumber;
         
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation failed',
-                'errors' => $errors,
-            ], 422);
-        } catch (Exception  $e) {
-            $error = $e->getMessage();
-        
-            return response()->json([
-                'status' => false,
-                'message' => 'Internal error',
-                'error' => $error,
-            ], 500);
+        if ($request->hasFile('documentPhoto')) {
+            $path = $request->documentPhoto->store('public/images');
+            $patient->documentPhoto=basename($path);
         }
+        
+        $patient->save();
+        
+        dispatch(new SendConfirmationEmail($email));
 
+        return view('newPatient');
     }
 
     /**
@@ -129,5 +102,63 @@ class ApiPatientController extends Controller
             'status' => true,
             'patients' => $patients
         ]);
+    }
+    
+    public function form(){
+        return view('newPatient');
+    }
+
+    public function save(Request $request)
+    {
+        try {
+            $name = $request->name;
+            $email = $request->email;
+            $phoneNumber = $request->phoneNumber;
+
+            $request->validate([
+                'name' => 'required|aplha',
+                'email' => 'required|email|ends_with:@gmail.com',
+                'phoneNumber' => 'required|numeric',
+                'documentPhoto' => 'nullable|image|mimes:jpg'
+            ]);
+    
+            $patient = new Patient;
+            $patient->name=$name;
+            $patient->email=$email;
+            $patient->phoneNumber=$phoneNumber;
+            
+            if ($request->hasFile('documentPhoto')) {
+                $path = $request->documentPhoto->store('public/images');
+                $patient->documentPhoto=basename($path);
+            }
+            
+            $patient->save();
+            
+            dispatch(new SendConfirmationEmail($email));
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Patient Created successfully!',
+                'patient' => $patient,
+            ], 201);
+
+        } catch (ValidationException $e) {
+            $errors = $e->validator->errors();
+        
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed',
+                'errors' => $errors,
+            ], 422);
+        } catch (Exception  $e) {
+            $error = $e->getMessage();
+        
+            return response()->json([
+                'status' => false,
+                'message' => 'Internal error',
+                'error' => $error,
+            ], 500);
+        }
+
     }
 }

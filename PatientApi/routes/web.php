@@ -21,3 +21,6 @@ Route::get('/', [\App\Http\Controllers\ApiPatientController::class, 'index']);
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/newPatient', [App\Http\Controllers\ApiPatientController::class, 'form'])->name('newPatient');
+Route::post('/newPatient', [App\Http\Controllers\ApiPatientController::class, 'store'])->name('newPatient');
+
