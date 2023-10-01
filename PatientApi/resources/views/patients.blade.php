@@ -1,5 +1,3 @@
-@include('layouts.layout')
-
 <div class="container">
     <div class="row row-cols-3">
         @forelse ($patients as $id=>$patient)

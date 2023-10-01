@@ -17,7 +17,7 @@ class ApiPatientController extends Controller
     {
         $patients = Patient::all();
 
-        return view('patients', compact('patients'));
+        return view('index', compact('patients'));
     }
 
     /**
@@ -41,7 +41,12 @@ class ApiPatientController extends Controller
             'name' => 'required|regex:/^[A-Za-z\s]+$/',
             'email' => 'required|email|unique:patients|ends_with:@gmail.com',
             'phoneNumber' => 'required|regex:/^[0-9]+$/',
-            'documentPhoto' => 'nullable|image|mimes:jpg'
+            'documentPhoto' => ['nullable','image',function ($attribute, $value, $fail) {
+                $extension = strtolower($value->getClientOriginalExtension());
+                if ($extension !== 'jpg') {
+                    $fail('The document photo field must be a file of type: jpg.');
+                }
+            }]
         ]);
 
         $patient = new Patient;
@@ -58,7 +63,7 @@ class ApiPatientController extends Controller
         
         dispatch(new SendConfirmationEmail($email));
 
-        return view('newPatient');
+        return back()->with('message', 'The patient has been added successfully');
     }
 
     /**
@@ -161,4 +166,5 @@ class ApiPatientController extends Controller
         }
 
     }
+
 }
