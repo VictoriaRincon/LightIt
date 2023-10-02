@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\SendConfirmationEmail;
 use App\Models\Patient;
 use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -33,37 +34,44 @@ class ApiPatientController extends Controller
      */
     public function store(Request $request)
     {
-        $name = $request->name;
-        $email = $request->email;
-        $phoneNumber = $request->phoneNumber;
+        try {
+            $name = $request->name;
+            $email = $request->email;
+            $phoneNumber = $request->phoneNumber;
 
-        $request->validate([
-            'name' => 'required|regex:/^[A-Za-z\s]+$/',
-            'email' => 'required|email|unique:patients|ends_with:@gmail.com',
-            'phoneNumber' => 'required|regex:/^[0-9]+$/',
-            'documentPhoto' => ['nullable','image',function ($attribute, $value, $fail) {
-                $extension = strtolower($value->getClientOriginalExtension());
-                if ($extension !== 'jpg') {
-                    $fail('The document photo field must be a file of type: jpg.');
-                }
-            }]
-        ]);
+            $request->validate([
+                'name' => 'required|regex:/^[A-Za-z\s]+$/',
+                'email' => 'required|email|unique:patients|ends_with:@gmail.com',
+                'phoneNumber' => 'required|regex:/^[0-9]+$/',
+                'documentPhoto' => ['nullable','image',function ($attribute, $value, $fail) {
+                    $extension = strtolower($value->getClientOriginalExtension());
+                    if ($extension !== 'jpg') {
+                        $fail('The document photo field must be a file of type: jpg.');
+                    }
+                }]
+            ]);
 
-        $patient = new Patient;
-        $patient->name=$name;
-        $patient->email=$email;
-        $patient->phoneNumber=$phoneNumber;
+            $patient = new Patient;
+            $patient->name=$name;
+            $patient->email=$email;
+            $patient->phoneNumber=$phoneNumber;
+            
+            if ($request->hasFile('documentPhoto')) {
+                $path = $request->documentPhoto->store('public/images');
+                $patient->documentPhoto=basename($path);
+            }
+            
+            $patient->save();
+            
+            dispatch(new SendConfirmationEmail($email));
+
+            return back()->with('message', 'The patient has been added successfully');
         
-        if ($request->hasFile('documentPhoto')) {
-            $path = $request->documentPhoto->store('public/images');
-            $patient->documentPhoto=basename($path);
+        } catch (QueryException  $e) {
+            $error = $e->getMessage();
+            
+            return back()->with('error', $error);
         }
-        
-        $patient->save();
-        
-        dispatch(new SendConfirmationEmail($email));
-
-        return back()->with('message', 'The patient has been added successfully');
     }
 
     /**

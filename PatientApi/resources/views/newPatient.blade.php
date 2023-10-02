@@ -51,6 +51,18 @@
             </script>
         @endif
 
+        @if(Session::has('error'))
+            <script>
+                toastr.options = {
+                    "closeButton": true,
+                    "newestOnTop": false,
+                    "positionClass": "toast-bottom-center",
+                    "timeOut": "10000",
+                };
+                toastr.error("{{Session::get('error')}}");
+            </script>
+        @endif
+
         @if ($errors->any())
             <script>
                 toastr.options = {
