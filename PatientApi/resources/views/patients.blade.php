@@ -1,13 +1,15 @@
 <div class="container">
-    <div class="row row-cols-3">
+    <div class="row row-cols-md-5 row-cols-3">
         @forelse ($patients as $id=>$patient)
             <div class="col">
-                <div class="card" style="margin: 10px">
+                <div class="card">
                     @isset($patient->documentPhoto)
-                        <img class="card-img-top" src="{{ asset('storage/images/'.$patient->documentPhoto)}}" alt="{{$patient->name}} document photo">
+                        <img class="card-img-top cut-img" src="{{ asset('storage/images/'.$patient->documentPhoto)}}" alt="{{$patient->name}} document photo">
+                    @else
+                        <img class="card-img-top cut-img" src="{{ asset('storage/images/DocImage.png')}}" alt="{{$patient->name}} document photo">
                     @endisset
-                    <h3 class="card-title" style='padding:5px;text-align: center;'>{{$patient->name}}</h3>
-                    <button class="btn btn-secondary" style="border-top-left-radius:0px; border-top-right-radius:0px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{$id}}" aria-expanded="false" aria-controls="collapse-{{$id}}">
+                    <h3 class="card-title">{{$patient->name}}</h3>
+                    <button class="btn btn-secondary btn-card" style="" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{$id}}" aria-expanded="false" aria-controls="collapse-{{$id}}">
                         Info
                     </button>
                     <div class="collapse" id="collapse-{{$id}}">
