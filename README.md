@@ -1,4 +1,4 @@
-<em> # FullStack - New Challenge </em>
+# FullStack - New Challenge
 https://lightit.slite.page/p/lzAFJyBVgxbWAO/FullStack-New-Challenge
 
 Patient registration aplication.
