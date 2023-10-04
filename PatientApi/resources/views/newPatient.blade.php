@@ -2,7 +2,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="offset-4 col-4 p-3 border border-secondary rounded">
+        <div class="offset-md-4 col-md-4 p-3 border border-secondary rounded bg-white">
             <form  method="POST" action="{{ url('/newPatient') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">

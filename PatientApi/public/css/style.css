@@ -1,14 +1,27 @@
+:root {
+    --primary-color: #773DBD;
+    --secondary-color: #202E3D;
+}
+
+body {
+    background-color: var(--secondary-color);
+}
+
 .toast-bottom-center {
     bottom: 12px;
 }
 
 .cut-img {
     object-position: center;
-    width: 100%; /* Establece el ancho de la imagen al 100% del contenedor (.card) */
-    height: auto; /* Permite que la altura se ajuste automáticamente para mantener la proporción original */
-    aspect-ratio: 1; /* Establece una relación de aspecto de 1:1 (cuadrada) */
-    object-fit: cover; /* Recorta la imagen para que se ajuste al contenedor sin distorsionarla */
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
 
+}
+
+.card {
+    margin: 10px;
 }
 
 .card-title {
@@ -16,11 +29,15 @@
     text-align: center;
 }
 
+.card button, form button {
+    background-color: var(--primary-color)!important;
+}
+
 .btn-card {
     border-top-left-radius:0px; 
     border-top-right-radius:0px;
 }
 
-.card {
-    margin: 10px;
+.navbar {
+    background-color: var(--secondary-color);
 }
