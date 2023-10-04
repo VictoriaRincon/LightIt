@@ -96,6 +96,33 @@ Now your container is set up and ready to use.
 To access the web application, open your web browser and enter the following URL:
 http://localhost:9000
 
+# Local Installation Instructions
+1. You have to install:
+  - PHP vs 8.2.11
+  - Composer v 2.6.3
+  - Laravel v 5.1.2
+  - Bootstrap v 5.3.2
+  - npm v 10.1.0
+  - Toastr v 2.1.4
+  - MySql v 8.1.0
+    
+2. Configure the .env file. Specifically the MAIL_ section.
+3. RUN sql command in MySql:
+    ```shell
+    CREATE DATABASE IF NOT EXISTS patientapi;
+4. RUN in console:
+   ```shell
+   php artisan migrate
+   php artisan storage:link
+   php artisan queue:work
+5. In other console:
+   ```shell
+   php artisan serve
+Now your container is set up and ready to use.
+
+To access the web application, open your web browser and enter the following URL:
+http://localhost:8000
+   
 ![Alt text](image.png)
 
 Explication video of the form in 04-10-2023_04-21-18.mp4 file.
