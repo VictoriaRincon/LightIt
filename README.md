@@ -13,7 +13,7 @@ Please note that the **default database password** is 'root'.
 
 2. Navigate to the repository directory using your terminal, until you reach the PatientApi folder.
 
-3. Configure the .env file
+3. Configure the .env file. Specifically the MAIL_ section.
     ```shell
 
     echo APP_NAME=Laravel > .env
