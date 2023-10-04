@@ -7,7 +7,7 @@ Patient registration aplication.
 
 To set up and run this container, please follow the steps below:
 
-Please note that the **default database password**git is 'root'.
+Please note that the **default database password** is 'root'.
 
 1. Clone this repository to your local machine.
 
