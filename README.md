@@ -26,7 +26,7 @@ Please note that the **default database password** is 'root'.
     echo LOG_DEPRECATIONS_CHANNEL=null >> .env
     echo LOG_LEVEL=debug >> .env
  
-    echo DB_CONNECTION=mysql > .env
+    echo DB_CONNECTION=mysql >> .env
     echo DB_HOST=mysql >> .env
     echo DB_PORT=3306 >> .env
     echo DB_DATABASE=patientapi >> .env
